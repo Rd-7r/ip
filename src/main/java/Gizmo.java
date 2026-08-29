@@ -2,8 +2,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Gizmo {
-    private static ArrayList<String> taskList = new ArrayList<>();
-    private static ArrayList<Boolean> taskCheckList = new ArrayList<>();
+    private static ArrayList<Task> taskList = new ArrayList<>();
 
     public static void main() {
         String banner = "    ________________________________________________________________________________________\n"
@@ -14,7 +13,7 @@ public class Gizmo {
         handleCommands(taskList);
     }
 
-    private static void handleCommands(ArrayList<String> taskList){
+    private static void handleCommands(ArrayList<Task> taskList){
         Scanner in = new Scanner(System.in);
 
         while (in.hasNextLine()){
@@ -30,12 +29,11 @@ public class Gizmo {
             if (trimmedCommand.equals("list")){
                 listAllTasks(taskList);
             }else if (splitCommand.length == 2 && splitCommand[0].equals("mark") && isInteger(splitCommand[1])){
-                handleMarkCommand(taskCheckList, Integer.parseInt(splitCommand[1]) - 1);
+                handleMarkCommand(Integer.parseInt(splitCommand[1]) - 1);
             }else if (splitCommand.length == 2 && splitCommand[0].equals("unmark") && isInteger(splitCommand[1])) {
-                handleUnmarkCommand(taskCheckList, Integer.parseInt(splitCommand[1]) - 1);
+                handleUnmarkCommand(Integer.parseInt(splitCommand[1]) - 1);
             }else {
-                taskList.add(command);
-                taskCheckList.add(false);
+                taskList.add(new Task(command));
                 System.out.println(
                     "    ____________________________________________________________________________________\n"
                     + "    added: " + command + "\n"
@@ -52,50 +50,62 @@ public class Gizmo {
         );
     }
 
-    private static void listAllTasks(ArrayList<String> taskList){
+    private static void listAllTasks(ArrayList<Task> taskList){
         System.out.println("    ________________________________________________________________________________________");
 
         if (taskList.isEmpty()){
             System.out.println("    wow, Such empty!");
         }else {
             for (int i=0; i<taskList.size(); i++) {
-                String status = taskCheckList.get(i) ? "[X]" : "[ ]";
+                Task task = taskList.get(i);
                 System.out.println(
-                        "    " + (i+1) + ". " + status + " " + taskList.get(i)
+                        "    " + (i+1) + ". " + task.getStatusIcon() + " " + task.getDescription()
                 );
             }
         }
         System.out.println("    ________________________________________________________________________________________\n");
     }
 
-    private static void handleMarkCommand(ArrayList<Boolean> taskCheckList, int taskListIndex){
+    private static void handleMarkCommand(int taskListIndex){
         System.out.println("    ________________________________________________________________________________________");
-        if (taskListIndex >= taskCheckList.size() || taskListIndex < 0){
+        if (taskListIndex >= taskList.size() || taskListIndex < 0){
             System.out.println("    failed: You can't to mark a non-existent task :/");
-        }else if (taskCheckList.get(taskListIndex)){
+            System.out.println("    ________________________________________________________________________________________\n");
+            return;
+        }
+
+        Task task = taskList.get(taskListIndex);
+
+        if (task.isDone()){
             System.out.println("    somehow, against all odds, you've managed to mark an already marked task!");
         }else{
             System.out.println(
                 "    Nice, I'll be marking this as done!:\n"
-                + "    [X] " + taskList.get(taskListIndex)
+                + "    [X] " + task.getDescription()
             );
-            taskCheckList.set(taskListIndex, true);
+            task.markAsDone();
         }
         System.out.println("    ________________________________________________________________________________________\n");
     }
 
-    private static void handleUnmarkCommand(ArrayList<Boolean> taskCheckList, int taskListIndex){
+    private static void handleUnmarkCommand(int taskListIndex){
         System.out.println("    ________________________________________________________________________________________");
-        if (taskListIndex >= taskCheckList.size() || taskListIndex < 0){
+        if (taskListIndex >= taskList.size() || taskListIndex < 0){
             System.out.println("    failed: you can't unmark something that doesn't exist :/");
-        }else if (!taskCheckList.get(taskListIndex)){
+            System.out.println("    ________________________________________________________________________________________\n");
+            return;
+        }
+
+        Task task = taskList.get(taskListIndex);
+
+        if (!task.isDone()){
             System.out.println("    unmarking an unmarked task won't magically delete the task :)");
         }else{
             System.out.println(
                     "    marking this as undone, be sure to get back to it later!:\n"
-                            + "    [ ] " + taskList.get(taskListIndex)
+                            + "    [ ] " + task.getDescription()
             );
-            taskCheckList.set(taskListIndex, false);
+            task.unmark();
         }
         System.out.println("    ________________________________________________________________________________________\n");
     }
