@@ -1,3 +1,5 @@
+package gizmo.task;
+
 /**
  * Represents a task with a description and completion state.
  */

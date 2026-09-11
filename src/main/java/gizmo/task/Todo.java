@@ -1,7 +1,9 @@
+package gizmo.task;
+
 /**
  * A task without an associated date or time.
  */
-public class Todo extends Task{
+public class Todo extends Task {
 
     public Todo(String description) {
         super(description);

@@ -1,7 +1,9 @@
+package gizmo.task;
+
 /**
  * A task that must be completed by a specified date or time.
  */
-public class Deadline extends Task{
+public class Deadline extends Task {
 
     protected String completeBy;
 
