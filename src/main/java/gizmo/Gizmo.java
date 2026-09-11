@@ -1,3 +1,10 @@
+package gizmo;
+
+import gizmo.task.Deadline;
+import gizmo.task.Event;
+import gizmo.task.Task;
+import gizmo.task.Todo;
+
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -196,7 +203,7 @@ public class Gizmo {
      * @return the parsed task
      * @throws GizmoException if the command is invalid
      */
-    private static Task filterTaskCommand (String task) throws GizmoException{
+    private static Task filterTaskCommand (String task) throws GizmoException {
         if (task.startsWith(TODO_PREFIX)) {
             return parseTodo(task);
         }
@@ -210,7 +217,7 @@ public class Gizmo {
     }
 
     /** Parses a todo command and extracts its description. */
-    private static Task parseTodo(String task) throws GizmoException{
+    private static Task parseTodo(String task) throws GizmoException {
         String description = task.substring(TODO_PREFIX.length()).strip();
         boolean isAnyStringEmpty = description.isEmpty();
         if (isAnyStringEmpty) {

@@ -1,3 +1,5 @@
+package gizmo;
+
 /**
  * Represents an invalid command or input entered for Gizmo.
  */

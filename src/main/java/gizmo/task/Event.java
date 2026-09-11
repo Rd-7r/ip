@@ -1,7 +1,9 @@
+package gizmo.task;
+
 /**
  * A task that occurs between a specified start and end time.
  */
-public class Event extends Task{
+public class Event extends Task {
 
     protected String eventStart;
     protected String eventEnd;
