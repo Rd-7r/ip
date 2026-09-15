@@ -209,10 +209,11 @@ public class Gizmo {
         }
 
         Task removedTask = taskList.remove(taskListIndex);
+        saveTasks(taskList);
 
         System.out.println(
                 LINE_SEPERATOR
-                + "    Done. Removed task::\n"
+                + "    Done. Removed task:\n"
                 + "    " + removedTask + "\n"
                 + "    " + taskList.size() + " tasks remaining\n"
                 + LINE_SEPERATOR
