@@ -12,6 +12,11 @@ public class Deadline extends Task {
         this.completeBy = completeBy;
     }
 
+    /** Returns the deadline date or time. */
+    public String getCompleteBy() {
+        return completeBy;
+    }
+
     @Override
     public String toString(){
         return "[D]" + super.toString() +

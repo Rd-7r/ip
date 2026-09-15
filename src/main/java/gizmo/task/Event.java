@@ -14,6 +14,16 @@ public class Event extends Task {
         this.eventEnd = eventEnd;
     }
 
+    /** Returns the event start time. */
+    public String getEventStart() {
+        return eventStart;
+    }
+
+    /** Returns the event end time. */
+    public String getEventEnd() {
+        return eventEnd;
+    }
+
     @Override
     public String toString(){
         return "[E]" + super.toString() +

@@ -48,6 +48,7 @@ public class Gizmo {
 
     public static void main() {
         ArrayList<Task> taskList = new ArrayList<>();
+        loadTasks(taskList);
         System.out.println(WELCOME_BANNER);
 
         Scanner in = new Scanner(System.in);
@@ -98,6 +99,7 @@ public class Gizmo {
             Task task = filterTaskCommand(command);
 
             taskList.add(task);
+            saveTasks(taskList);
             System.out.println(
                     LINE_SEPERATOR
                     + "    added: \n    " + task + "\n"
@@ -165,6 +167,7 @@ public class Gizmo {
             System.out.println("    somehow, against all odds, you've managed to mark an already marked task!");
         }else{
             task.markAsDone();
+            saveTasks(taskList);
             System.out.println(
                 "    Nice, I'll be marking this as done!:\n    "
                 + task
@@ -188,6 +191,7 @@ public class Gizmo {
             System.out.println("    unmarking an unmarked task won't magically delete the task :)");
         }else{
             task.unmark();
+            saveTasks(taskList);
             System.out.println(
                     "    marking this as undone, be sure to get back to it later!:\n    "
                     + task
@@ -318,6 +322,30 @@ public class Gizmo {
         }
 
         return new Event(description, eventFrom, eventTo);
+    }
+
+    /** Loads saved tasks while allowing Gizmo to start if loading fails. */
+    private static void loadTasks(ArrayList<Task> taskList) {
+        try {
+            Storage.load(taskList);
+        } catch (GizmoException e) {
+            System.out.println(
+                    LINE_SEPERATOR
+                            + "    Warning: " + e.getMessage() + "\n"
+                            + LINE_SEPERATOR);
+        }
+    }
+
+    /** Saves the current task list and reports storage errors. */
+    private static void saveTasks(ArrayList<Task> taskList) {
+        try {
+            Storage.save(taskList);
+        } catch (GizmoException e) {
+            System.out.println(
+                    LINE_SEPERATOR
+                            + "    Warning: " + e.getMessage() + "\n"
+                            + LINE_SEPERATOR);
+        }
     }
 
 }
