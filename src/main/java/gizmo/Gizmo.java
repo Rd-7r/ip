@@ -33,6 +33,7 @@ public class Gizmo {
             + "    event.../from.../to...\n"
             + "    mark {task number}\n"
             + "    unmark {task number}\n"
+            + "    delete {task number}\n"
             + "    list\n"
             + "    bye";
 
@@ -73,10 +74,13 @@ public class Gizmo {
 
             String[] splitCommand = command.split("\\s+");
 
-            if (splitCommand.length > 0 && (splitCommand[0].equals("mark") || splitCommand[0].equals("unmark"))) {
+            if (splitCommand.length > 0
+                && (splitCommand[0].equals("mark")
+                || splitCommand[0].equals("unmark")
+                || splitCommand[0].equals("delete"))) {
 
                 if (splitCommand.length != 2) {
-                    throw new GizmoException("Use the command in this format: mark <task number> or unmark <task number>.");
+                    throw new GizmoException("Use the command in this format: mark <task number> or unmark <task number> or delete <task number>.");
                 }
 
                 int taskListIndex = parseTaskIndex(splitCommand[1], taskList.size());
@@ -85,6 +89,8 @@ public class Gizmo {
                     handleMarkCommand(taskList, taskListIndex);
                 } else if (splitCommand[0].equals("unmark")){
                     handleUnmarkCommand(taskList, taskListIndex);
+                } else if (splitCommand[0].equals("delete")){
+                    handleDeleteCommand(taskList, taskListIndex);
                 }
                 return;
             }
@@ -124,7 +130,7 @@ public class Gizmo {
         }
 
         if (taskNumber > taskListSize) {
-            throw new GizmoException("Failed: you can't mark/unmark a task that doesn't exist :/");
+            throw new GizmoException("Failed: you can't mark/unmark/delete a task that doesn't exist :/");
         }
         return taskNumber - 1;
     }
@@ -188,6 +194,25 @@ public class Gizmo {
             );
         }
         System.out.println(LINE_SEPERATOR);
+    }
+
+    private static void handleDeleteCommand (ArrayList<Task> taskList, int taskListIndex){
+        System.out.print(LINE_SEPERATOR);
+        if (!isValidTaskIndex(taskList, taskListIndex)){
+            System.out.println("    Invalid task index");
+            System.out.println(LINE_SEPERATOR);
+            return;
+        }
+
+        Task removedTask = taskList.remove(taskListIndex);
+
+        System.out.println(
+                LINE_SEPERATOR
+                + "    Done. Removed task::\n"
+                + "    " + removedTask + "\n"
+                + "    " + taskList.size() + " tasks remaining\n"
+                + LINE_SEPERATOR
+        );
     }
 
     /**
