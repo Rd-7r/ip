@@ -7,7 +7,8 @@ public class Deadline extends Task {
 
     protected String completeBy;
 
-    public Deadline (String description, String completeBy){
+    /** Creates a deadline task with its description and completion time. */
+    public Deadline(String description, String completeBy) {
         super(description);
         this.completeBy = completeBy;
     }
@@ -18,8 +19,8 @@ public class Deadline extends Task {
     }
 
     @Override
-    public String toString(){
-        return "[D]" + super.toString() +
-                " (by: " + completeBy + ")";
+    public String toString() {
+        return "[D]" + super.toString()
+                + " (by: " + completeBy + ")";
     }
 }

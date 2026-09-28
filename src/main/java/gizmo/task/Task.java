@@ -7,6 +7,7 @@ public class Task {
     protected String description;
     protected boolean isDone;
 
+    /** Creates an incomplete task with the supplied description. */
     public Task(String description) {
         this.description = description;
         this.isDone = false;
@@ -17,6 +18,7 @@ public class Task {
         return description;
     }
 
+    /** Returns whether this task is completed. */
     public boolean isDone() {
         return isDone;
     }
@@ -31,6 +33,7 @@ public class Task {
         isDone = false;
     }
 
+    /** Returns the icon representing this task's completion state. */
     public String getStatusIcon() {
         return isDone ? "[X]" : "[ ]";
     }

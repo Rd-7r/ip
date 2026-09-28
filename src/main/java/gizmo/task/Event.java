@@ -8,7 +8,8 @@ public class Event extends Task {
     protected String eventStart;
     protected String eventEnd;
 
-    public Event(String description, String eventStart, String eventEnd){
+    /** Creates an event task with its description, start time, and end time. */
+    public Event(String description, String eventStart, String eventEnd) {
         super(description);
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
@@ -25,8 +26,8 @@ public class Event extends Task {
     }
 
     @Override
-    public String toString(){
-        return "[E]" + super.toString() +
-                " (from: " + eventStart + " to: " + eventEnd + ")";
+    public String toString() {
+        return "[E]" + super.toString()
+                + " (from: " + eventStart + " to: " + eventEnd + ")";
     }
 }
