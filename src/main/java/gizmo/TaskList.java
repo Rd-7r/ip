@@ -76,4 +76,22 @@ public class TaskList {
                     "Failed: you can't mark/unmark/delete a task that doesn't exist :/");
         }
     }
+
+    /**
+     * Returns tasks whose descriptions contain the supplied keyword.
+     *
+     * @param keyword the text to search for.
+     * @return matching tasks in their original order.
+     */
+    public List<Task> findTasks(String keyword) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+
+        return Collections.unmodifiableList(matchingTasks);
+    }
 }

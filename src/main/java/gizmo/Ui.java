@@ -1,7 +1,7 @@
 package gizmo;
 
 import gizmo.task.Task;
-
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -132,5 +132,26 @@ public class Ui {
     /** Displays a task-changing message surrounded by Gizmo's separator. */
     private void showTaskChange(String message, Task task) {
         System.out.println(message + task + "\n" + LINE_SEPARATOR);
+    }
+
+    /**
+     * Displays tasks matching a keyword.
+     *
+     * @param matchingTasks tasks that matched the search keyword.
+     */
+    public void showMatchingTasks(List<Task> matchingTasks) {
+        System.out.print(LINE_SEPARATOR);
+        System.out.println("    Here are the tasks with the specified keyword in your list:");
+
+        if (matchingTasks.isEmpty()) {
+            System.out.println("    {There is no tasks with that keyword}");
+        } else {
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                System.out.println("    " + (i + 1) + ". "
+                        + matchingTasks.get(i));
+            }
+        }
+
+        System.out.println(LINE_SEPARATOR);
     }
 }

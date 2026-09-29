@@ -9,34 +9,54 @@ import gizmo.task.Todo;
  * Converts raw user input into validated commands for Gizmo to execute.
  */
 public class Parser {
-    private static final String VALID_COMMANDS =
-            "invalid command :P\n"
-            + "    valid commands are:\n"
-            + "    todo...\n"
-            + "    deadline.../by...\n"
-            + "    event.../from.../to...\n"
-            + "    mark {task number}\n"
-            + "    unmark {task number}\n"
-            + "    delete {task number}\n"
-            + "    list\n"
-            + "    bye";
+    private static final String BYE_COMMAND = "bye";
+    private static final String LIST_COMMAND = "list";
+    private static final String TODO_COMMAND = "todo";
+    private static final String DEADLINE_COMMAND = "deadline";
+    private static final String EVENT_COMMAND = "event";
+    private static final String MARK_COMMAND = "mark";
+    private static final String UNMARK_COMMAND = "unmark";
+    private static final String DELETE_COMMAND = "delete";
+    private static final String FIND_COMMAND = "find";
 
-    private static final String TODO_PREFIX = "todo ";
-    private static final String DEADLINE_PREFIX = "deadline ";
-    private static final String EVENT_PREFIX = "event ";
+    private static final String TODO_PREFIX = TODO_COMMAND + " ";
+    private static final String DEADLINE_PREFIX = DEADLINE_COMMAND + " ";
+    private static final String EVENT_PREFIX = EVENT_COMMAND + " ";
+    private static final String FIND_PREFIX = FIND_COMMAND + " ";
+
     private static final String BY_MARKER = " /by ";
     private static final String FROM_MARKER = " /from ";
     private static final String TO_MARKER = " /to ";
+
+    private static final String VALID_COMMANDS =
+            "invalid command :P\n"
+            + "    valid commands are:\n"
+            + "    " + TODO_COMMAND + "...\n"
+            + "    " + DEADLINE_COMMAND + ".../by...\n"
+            + "    " + EVENT_COMMAND + ".../from.../to...\n"
+            + "    " + MARK_COMMAND + " <task number>\n"
+            + "    " + UNMARK_COMMAND + " <task number>\n"
+            + "    " + DELETE_COMMAND + " <task number>\n"
+            + "    " + FIND_COMMAND + " <keyword>\n"
+            + "    " + LIST_COMMAND + "\n"
+            + "    " + BYE_COMMAND;
 
     /** Parses one raw command. */
     public Command parse(String input) throws GizmoException {
         String command = input.strip();
 
-        if (command.equals("bye")) {
-            return new Command(CommandType.EXIT, null, 0);
+        if (command.equals(BYE_COMMAND)) {
+            return new Command(CommandType.BYE, null, 0);
         }
-        if (command.equals("list")) {
+        if (command.equals(LIST_COMMAND)) {
             return new Command(CommandType.LIST, null, 0);
+        }
+        if (command.equals(FIND_COMMAND) || command.startsWith(FIND_PREFIX)) {
+            return new Command(
+                    CommandType.FIND,
+                    null,
+                    0,
+                    parseFindKeyword(command));
         }
 
         String[] words = command.split("\\s+");
@@ -58,9 +78,9 @@ public class Parser {
 
     /** Returns whether a command operates on a numbered task. */
     private boolean isTaskNumberCommand(String commandWord) {
-        return commandWord.equals("mark")
-                || commandWord.equals("unmark")
-                || commandWord.equals("delete");
+        return commandWord.equals(MARK_COMMAND)
+                || commandWord.equals(UNMARK_COMMAND)
+                || commandWord.equals(DELETE_COMMAND);
     }
 
     /** Parses mark, unmark, and delete commands. */
@@ -83,9 +103,9 @@ public class Parser {
         }
 
         CommandType type = switch (words[0]) {
-        case "mark" -> CommandType.MARK;
-        case "unmark" -> CommandType.UNMARK;
-        case "delete" -> CommandType.DELETE;
+        case MARK_COMMAND -> CommandType.MARK;
+        case UNMARK_COMMAND -> CommandType.UNMARK;
+        case DELETE_COMMAND -> CommandType.DELETE;
         default -> throw new GizmoException(VALID_COMMANDS);
         };
         return new Command(type, null, taskNumber);
@@ -153,7 +173,7 @@ public class Parser {
 
     /** Types of commands that Gizmo can execute. */
     public enum CommandType {
-        EXIT, LIST, ADD, MARK, UNMARK, DELETE
+        BYE, LIST, ADD, MARK, UNMARK, DELETE, FIND
     }
 
     /** Immutable result produced by parsing a user command. */
@@ -161,23 +181,55 @@ public class Parser {
         private final CommandType type;
         private final Task task;
         private final int taskNumber;
+        private final String keyword;
 
         private Command(CommandType type, Task task, int taskNumber) {
+            this(type, task, taskNumber, null);
+        }
+
+        private Command(CommandType type, Task task, int taskNumber, String keyword) {
             this.type = type;
             this.task = task;
             this.taskNumber = taskNumber;
+            this.keyword = keyword;
         }
 
+        /** Returns the command type. */
         public CommandType type() {
             return type;
         }
 
+        /** Returns the task associated with the command. */
         public Task task() {
             return task;
         }
 
+
+        /** Returns the one-based task number. */
         public int taskNumber() {
             return taskNumber;
         }
+
+        /** Returns the keyword used for a find command. */
+        public String keyword() {
+            return keyword;
+        }
+    }
+
+    /**
+     * Parses a find command and extracts its keyword.
+     *
+     * @param command the complete find command.
+     * @return the keyword to search for.
+     * @throws GizmoException if the keyword is empty.
+     */
+    private String parseFindKeyword(String command) throws GizmoException {
+        String keyword = command.substring(FIND_COMMAND.length()).strip();
+
+        if (keyword.isEmpty()) {
+            throw new GizmoException("The keyword to find cannot be empty.");
+        }
+
+        return keyword;
     }
 }

@@ -49,7 +49,7 @@ public class Gizmo {
 
             try {
                 Command command = parser.parse(input);
-                if (command.type() == CommandType.EXIT) {
+                if (command.type() == CommandType.BYE) {
                     break;
                 }
                 execute(command);
@@ -75,6 +75,9 @@ public class Gizmo {
             break;
         case UNMARK:
             unmarkTask(command.taskNumber());
+            break;
+        case FIND:
+            findTasks(command.keyword());
             break;
         case DELETE:
             deleteTask(command.taskNumber());
@@ -134,12 +137,21 @@ public class Gizmo {
 
     /** Standard Java entry point. */
     public static void main(String[] args) {
-        String filePath = args.length > 0 ? args[0] : DEFAULT_FILE_PATH;
+        String filePath = (args.length > 0) ? args[0] : DEFAULT_FILE_PATH;
         new Gizmo(filePath).run();
     }
 
     /** Convenience entry point supported by some IDE run configurations. */
     public static void main() {
         main(new String[0]);
+    }
+
+    /**
+     * Finds and displays tasks containing the supplied keyword.
+     *
+     * @param keyword the keyword to search for.
+     */
+    private void findTasks(String keyword) {
+        ui.showMatchingTasks(tasks.findTasks(keyword));
     }
 }
